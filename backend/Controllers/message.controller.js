@@ -46,8 +46,10 @@ export const getMessage = async( req, res) => {
         const senderId = req.user._id
         
         const conversation = await Conversation.findOne({
-            participants: [senderId, userToChatId]
+            participants: {$all : [senderId, userToChatId]}
         }).populate("messages")
+
+        if(!conversation) return res.status(200).json([])
 
         res.status(200).json(conversation.messages)
 
